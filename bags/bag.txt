@@ -1,0 +1,18 @@
+icon_button:
+sometime in icon_button text not chenge itself color. (bag.gif)
+
+icon_button, blur_menu, show_menu, filter:
+animation does not update at high speed
+
+filter:
+after clicking the icon color is updated incorrectly (bag2.gif)
+
+NeonEffect, BlurEffect:
+effects may be unstable
+
+collapsing_block:
+cracks in the mesh if width/num_x or height/num_y == float (bag.png)
+
+laod:
+error when repeating animations
+
