@@ -1,0 +1,11 @@
+@node Top
+@top Top
+
+@menu
+* test::
+@end menu
+
+@node test
+@chapter test
+@anchor{#test}
+text for test

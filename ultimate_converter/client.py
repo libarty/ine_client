@@ -10,6 +10,28 @@ import time, re, os, random, sys, json;
 BASE_DIR =  os.path.dirname(os.path.abspath(__file__))
 
 
+
+
+
+
+
+
+
+
+
+
+
+# convert list to string
+def listToString(s):  
+	
+	# initialize an empty string 
+	str1 = "," 
+	
+	# return string   
+	return (str1.join(s)) 
+
+
+
 class Test(QtWidgets.QWidget):
 	def __init__(self):
 		super().__init__()
@@ -405,32 +427,29 @@ class Test(QtWidgets.QWidget):
 			path = self.path_from.text()
 		else:
 			path = 'C:\\'
-		
+			
+			
+			
 		
 		# select file
-		file = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', 
-		 path, self.format)
+		file = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open file', path, self.format)
+		
+		
+		
 		# patch to file
-		give_path = file[0]
-		
-		
-		
-		
+		if not len(file[0]) == 0:
+			give_path = file[0]
+			first_file = file[0][0]
+			# convert list to string
 
-		
-		
-		
-
-		# patch to file
-		
-		print(give_path)
-		if give_path:
-			self.path_from.setText(give_path)
+			self.path_from.setText(listToString(give_path))
+			
+			
 			
 			
 			# give format
 			pattern = re.compile(r'\w+')
-			give_format = pattern.findall(give_path)[-1].lower()
+			give_format = pattern.findall(first_file)[-1].lower()
 			print(give_format)
 			
 			
@@ -530,92 +549,83 @@ class Test(QtWidgets.QWidget):
 		
 		
 		
-		type = self.select_file_from.currentText()
-		
-		give_format_folder = self.select_folder_from.currentText()
 		
 		
+		
+		
+		
+		
+		
+		
+		# get fields
 		give_path = self.path_from.text()
-		
-		
-		get_format = self.select_to.currentText()
 		get_path = self.path_to.text() + '/'
 		
+		type = self.select_file_from.currentText()
+		give_format_folder = self.select_folder_from.currentText()
+		get_format = self.select_to.currentText()
 		
-		
-		
-		
-		if os.path.exists(give_path) and os.path.exists(get_path):
-			print(give_path)
-			v = give_path.split('/')
-			print(v[-1])
-			d = v[-1].split('.')
-			print(d)
-			try: 
-				format = d[1]
-			except IndexError:
-				format = False
+		# check path
+		if give_path and os.path.exists(get_path) and get_format and type:
+			# check string
+			
+			if re.search(r'[,]', give_path):
+				print('search multi files')
+			# type file
+				list = give_path.split(',')
+				print(list)
+				for path in list:
+					ultimate_converter(path,get_path,get_format,type)
 				
-			if format :
-				print('search file')
 				
-				ultimate_converter(give_path,get_path,get_format,type)
+				
+				
+				
+				
 				
 				
 				
 				
 				
 			else:
-				print('search folder')
-				if give_format_folder == '---':
-					format = False
-				else:
-					format = give_format_folder
+			# type one path
+				if os.path.exists(give_path):
+					# get format
+					slesh = give_path.split('/')
+					print(slesh[-1])
+					point = slesh[-1].split('.')
+					print(point)
+					try: 
+						format = point[1]
+					except IndexError:
+						format = False
 					
-				pack = file_pack(give_path,format)
-				print(pack)
-				for list in pack:
-					print(list['path'])
-					if len(list['tags']) == 0:
-						tag_list = False
+					
+					if format :
+						print('search file')
+						print(give_path)
+						ultimate_converter(give_path,get_path,get_format,type)
 					else:
-						tag_list = list['tags']
-					
-					
-					ultimate_converter(list['path'],get_path,get_format,type,tags=list['tags'])
-				
-				
-				
-				
-				
-				
-
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-		else:
-			print('not correct patch')
-		
-		
-		
-		
+						print('search folder')
+						if give_format_folder == '---':
+							format = False
+						else:
+							format = give_format_folder
+							
+						pack = file_pack(give_path,format)
+						print(pack)
+						for list in pack:
+							print(list['path'])
+							if len(list['tags']) == 0:
+								tag_list = False
+							else:
+								tag_list = list['tags']
+							ultimate_converter(list['path'],get_path,get_format,type,tags=list['tags'])
+				else:
+					print('not found folder')
+		else 
+			print('blank field(s)')
+			
 
 if __name__ == "__main__":
 	app = QtWidgets.QApplication(sys.argv)
